@@ -2,7 +2,6 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -31,7 +30,6 @@ export class UsersService {
 
     try {
       await this.userRepository.save(user);
-      // Logger.log(user);
     } catch (error) {
       if (error.code === '23505') {
         throw new ConflictException('Email address already exists');
@@ -57,7 +55,6 @@ export class UsersService {
   }
 
   async removeUser(id: string): Promise<void> {
-    Logger.log(id);
     const result = await this.userRepository.delete({ id });
 
     if (result.affected === 0) {
