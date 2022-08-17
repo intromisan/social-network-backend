@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { UserEntity } from './entities';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -18,8 +19,19 @@ export class UsersService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<void> {
+    const { password } = createUserDto;
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = this.userRepository.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
+
     try {
-      await this.userRepository.save({ ...createUserDto });
+      await this.userRepository.save(user);
+      // Logger.log(user);
     } catch (error) {
       if (error.code === '23505') {
         throw new ConflictException('Email address already exists');

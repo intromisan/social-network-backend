@@ -5,5 +5,5 @@ export class UpdateUserDto {
   email: string;
 
   @IsString()
-  name: string;
+  username: string;
 }

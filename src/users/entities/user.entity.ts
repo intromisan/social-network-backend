@@ -23,7 +23,10 @@ export class UserEntity {
   @Column({
     nullable: true,
   })
-  name: string;
+  username: string;
+
+  @Column()
+  password: string;
 
   @BeforeUpdate()
   updateTimeStamp() {
