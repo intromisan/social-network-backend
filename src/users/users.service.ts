@@ -9,12 +9,15 @@ import { Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { UserEntity } from './entities';
 import * as bcrypt from 'bcryptjs';
+import { ProfileEntity } from 'src/profiles/entities/profile.entity';
+import { ProfilesService } from 'src/profiles/profiles.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly profilesService: ProfilesService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<void> {
@@ -23,8 +26,11 @@ export class UsersService {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    const profile = await this.profilesService.createProfile();
+
     const user = this.userRepository.create({
       ...createUserDto,
+      profile: profile,
       password: hashedPassword,
     });
 
@@ -40,7 +46,10 @@ export class UsersService {
   }
 
   async getUserById(id: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['profile'],
+    });
     if (!user) throw new NotFoundException(`User with ID: ${id} not found`);
 
     return user;
