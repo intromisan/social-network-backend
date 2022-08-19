@@ -26,7 +26,7 @@ export class AuthService {
 
   async signIn(
     authCredentialsDto: AuthCredentialsDto,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ access_token: string }> {
     const { email, password } = authCredentialsDto;
     const user = await this.userRepository.findOneBy({ email });
     const isMatch = await bcrypt.compare(password, user.password);
@@ -43,7 +43,7 @@ export class AuthService {
     const payload: JwtPayload = { email };
     const secret = this.config.get('JWT_SECRET');
     return {
-      accessToken: this.jwtService.sign(payload, {
+      access_token: this.jwtService.sign(payload, {
         expiresIn: '1h',
         secret: secret,
       }),

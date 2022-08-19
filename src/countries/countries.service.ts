@@ -11,7 +11,10 @@ export class CountriesService {
   ) {}
 
   async getCountries(): Promise<CountryEntity[]> {
-    return await this.countryRepository.find();
+    return await this.countryRepository
+      .createQueryBuilder('country')
+      .orderBy('country.countryName', 'ASC')
+      .getMany();
   }
 
   async getCountryById(id: string): Promise<CountryEntity> {
