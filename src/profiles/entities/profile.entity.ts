@@ -9,6 +9,7 @@ import {
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('profiles')
@@ -35,7 +36,7 @@ export class ProfileEntity {
     nullable: true,
   })
   @JoinColumn({ name: 'countryId' })
-  country: CountryEntity;
+  countryId: string;
 
   @Column({ nullable: true })
   publicWebsite: string;
@@ -46,11 +47,10 @@ export class ProfileEntity {
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updatedAt: Date;
-
-  @BeforeUpdate()
-  updateTimeStamp() {
-    this.updatedAt = new Date();
-  }
 }

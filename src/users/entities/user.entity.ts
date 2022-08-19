@@ -17,7 +17,7 @@ export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => ProfileEntity, { eager: true, onDelete: 'CASCADE' })
+  @OneToOne(() => ProfileEntity)
   @JoinColumn()
   profile: ProfileEntity;
 
